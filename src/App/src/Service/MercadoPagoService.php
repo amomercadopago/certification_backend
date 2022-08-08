@@ -20,7 +20,7 @@ class MercadoPagoService
 {
     private string $baseUrl;
     private MercadoPagoClient $mercadoPagoClient;
-    private const TOKEN = 'APP_USR-1159009372558727-072921-8d0b9980c7494985a5abd19fbe921a3d-617633181';
+    private const TOKEN = 'APP_USR-6317427424180639-042414-47e969706991d3a442922b0702a0da44-469485398';
 
     /**
      * @throws ContainerExceptionInterface
