@@ -63,11 +63,11 @@ class MercadoPagoService
 //             ],
             'items' => $data['products'],
             'external_reference' => 'alodia@team.amocrm.com',
-//             'back_urls' => [
+            'back_urls' => [
 //                 'success' => 'https://amomercadopago.github.io/?page=payment&result=success',
 //                 'pending' => 'https://amomercadopago.github.io/?page=payment&result=pending',
 //                 'failure' => 'https://amomercadopago.github.io/?page=payment&result=failure',
-//             ],
+            ],
             'payment_methods' => [
                 'excluded_payment_methods' => [
                     ['id' => 'visa'],
