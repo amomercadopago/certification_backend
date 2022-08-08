@@ -75,7 +75,7 @@ class MercadoPagoService
                 'installments' => 6,
             ],
             'auto_return' => 'approved',
-//             'notification_url' => "$this->baseUrl/webhook"
+            'notification_url' => "$this->baseUrl/webhook"
         ];
     }
 }
