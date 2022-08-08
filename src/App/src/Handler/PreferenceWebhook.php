@@ -19,8 +19,8 @@ class PreferenceWebhook implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $body = json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
-        $this->logger->info('Webhook:', $body ?? []);
+//         $body = json_decode($request->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+        $this->logger->info('Webhook:', [$request->getBody()->getContents()]);
         return new JsonResponse([]);
 
     }
