@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mercado-pago-backend
+  namespace: amowidgets
+  labels:
+    app: mercado-pago-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mercado-pago-backend
+  template:
+    metadata:
+      labels:
+        app: mercado-pago-backend
+    spec:
+      containers:
+        - name: mercado-pago-backend
+          image: registry.gitlab.qsoft.ru/amocrm/mercado-pago-backend:dev
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: DEV_MODE
+              value: "false"
+            - name: DB_HOST
+              value: "10.60.0.5"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_DRIVER
+              value: "pdo_mysql"
+            - name: PROXY_DIR
+              value: "/data/proxy"
+            - name: BASE_URL
+              value: "https://merkado-pago.amocrmmarket.com"
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mercado-pago-backend-secrets
+                  key: db_username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mercado-pago-backend-secrets
+                  key: db_password
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: mercado-pago-backend-secrets
+                  key: db_database
+          resources:
+            limits:
+              cpu: 500m
+              ephemeral-storage: 256Mi
+              memory: 1Gi
+            requests:
+              cpu: 500m
+              ephemeral-storage: 256Mi
+              memory: 1Gi
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+          securityContext:
+            capabilities:
+              drop:
+                - NET_RAW
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      imagePullSecrets:
+        - name: qsoft-registry
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mercado-pago-backend
+  namespace: amowidgets
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: mercado-pago-backend
+  sessionAffinity: None
+  type: ClusterIP

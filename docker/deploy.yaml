@@ -1,0 +1,69 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: mercado-pago-backend
+  namespace: amowidgets
+  labels:
+    app: mercado-pago-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mercado-pago-backend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: mercado-pago-backend
+    spec:
+      containers:
+        - image: 'registry.gitlab.qsoft.ru/amocrm/mercado-pago-backend:dev'
+          name: mercado-pago-backend
+          imagePullPolicy: Always
+          env:
+            - name: DEV_MODE
+              value: "false"
+            - name: DB_HOST
+              value: "172.27.2.84"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_DRIVER
+              value: "pdo_mysql"
+            - name: DB_USERNAME
+              value: "amocrm"
+            - name: DB_PASSWORD
+              value: "amocrm"
+            - name: DB_DATABASE
+              value: "merkadopagodb"
+            - name: PROXY_DIR
+              value: "/data/proxy"
+            - name: BASE_URL
+              value: "https://merkado-pago.amowidgets.vpool.qsoft.ru"
+          ports:
+            - name: http
+              containerPort: 8080
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: mercado-pago-backend
+  namespace: amowidgets
+spec:
+  type: ClusterIP
+  selector:
+    app: mercado-pago-backend
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP

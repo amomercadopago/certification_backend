@@ -1,0 +1,17 @@
+.idea/
+vendor/
+data/cache/*
+!data/cache/.gitkeep
+data/log/*
+!data/log/.gitkeep
+data/proxy/*
+!data/proxy/.gitkeep
+.env
+.phpcs-cache
+.phpunit.result.cache
+clover.xml
+coveralls-upload.json
+phpunit.xml
+config/development.config.php
+config/autoload/local.php
+config/autoload/*.local.php

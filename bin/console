@@ -1,0 +1,44 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use Doctrine\DBAL\DriverManager;
+use Doctrine\Migrations\Configuration\Connection\ExistingConnection;
+use Doctrine\Migrations\Configuration\Migration\PhpFile;
+use Doctrine\Migrations\DependencyFactory;
+use Doctrine\Migrations\Tools\Console\Command;
+use Interop\Container\ContainerInterface;
+use Symfony\Component\Console\Application;
+
+/** @var ContainerInterface $container */
+$container = require __DIR__ . '/../config/container.php';
+
+$config = $container->get('config');
+$commands = $config['laminas-cli']['commands'];
+
+$application = new Application('Application console');
+
+foreach ($commands as $command) {
+    $application->add($container->get($command));
+}
+
+$connection = DriverManager::getConnection($config['migrations_db']);
+
+$config = new PhpFile('migrations.php');
+
+$dependencyFactory = DependencyFactory::fromConnection($config, new ExistingConnection($connection));
+$application->addCommands([
+    new Command\DumpSchemaCommand($dependencyFactory),
+    new Command\ExecuteCommand($dependencyFactory),
+    new Command\GenerateCommand($dependencyFactory),
+    new Command\LatestCommand($dependencyFactory),
+    new Command\ListCommand($dependencyFactory),
+    new Command\MigrateCommand($dependencyFactory),
+    new Command\RollupCommand($dependencyFactory),
+    new Command\StatusCommand($dependencyFactory),
+    new Command\SyncMetadataCommand($dependencyFactory),
+    new Command\VersionCommand($dependencyFactory),
+]);
+
+$application->run();
