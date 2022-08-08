@@ -47,20 +47,20 @@ class MercadoPagoService
     private function prepareArrayForCreatePreference(array $data): array
     {
         return [
-//             'payer' => [
-//                 'name' => $data['payer']['name'],
-//                 'surname' => $data['payer']['surname'],
-//                 'email' => $data['payer']['email'],
-//                 'phone' => [
-//                     'area_code' => $data['payer']['phone']['area_code'],
-//                     'number' => $data['payer']['phone']['number'],
-//                 ],
-//                 'address' => [
-//                     'street_name' => $data['payer']['address']['street'],
-//                     'street_number' => $data['payer']['address']['homeNumber'],
-//                     'zip_code' => $data['payer']['address']['postIndex'],
-//                 ],
-//             ],
+            'payer' => [
+                'name' => $data['payer']['name'],
+                'surname' => $data['payer']['surname'],
+                'email' => $data['payer']['email'],
+                'phone' => [
+                    'area_code' => $data['payer']['phone']['area_code'],
+                    'number' => $data['payer']['phone']['number'],
+                ],
+                'address' => [
+                    'street_name' => $data['payer']['address']['street'],
+                    'street_number' => $data['payer']['address']['homeNumber'],
+                    'zip_code' => $data['payer']['address']['postIndex'],
+                ],
+            ],
             'items' => $data['products'],
             'external_reference' => 'alodia@team.amocrm.com',
             'back_urls' => null,
